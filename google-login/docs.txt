@@ -1,0 +1,45 @@
+Instructions for required updated:
+
+props to GLoginBtn:
+    mt_bool: optional, set to true if there if a need to save the tokens we get from the google api
+    role: optional, choose the role of the user trying to login
+    redirectUrl: required, the url we get to after the login
+    failureUrl: required, the url we get to in case the login fails
+    additionalScopes: optional, an array of additional scopes you want to get from the google api
+
+
+CustomUser.json
+
+* Add this to the properties:
+
+  "properties": {
+
+    "loginId": {
+      "type": "String",
+      "mysql": {
+        "columnName": "login_id"
+      }
+    }
+
+  }
+
+
+
+-------------- SQL ALTERS -------------------------
+
+    ALTER TABLE `CustomUser` ADD COLUMN `login_id` VARCHAR(255);
+
+
+-------signing up the aplication to the google api-------
+* Browse to https://developers.google.com/identity/sign-in/web/sign-in and configure you project-
+    choose web browser project
+
+* click on the "API Console" link or go to google developers console
+* select credentials 
+* select OAuth client (click the name)
+    you can change the name of the credential
+    add an Authorized JavaScript origin: http://localhost:3000 (only for development
+    add an Authorized redirect URI: http://localhost:8080/oauth2callback (only for development)
+
+click on the download sign and replace the content of the file config/client_secret.json with the content of the file you downloaded
+go to client/GLoginBtn.js and change the value of client_id variable to the value of the client_id specified in the fileclient_secret.json
