@@ -100,7 +100,7 @@ module.exports = app => {
                 res.redirect(failureUrl);//todo
             }
 
-            let redirectUrl = state.url ? state.url : "https://www.hilma.tech/";
+            let redirectUrl = state.loc ? state.loc : "https://www.hilma.tech/";
 
             // todo- check if there is another identifing data
             // maybe- change sub to loginId
