@@ -7,17 +7,17 @@ const SCOPES = [
 ];//TODO- get more scopes in props?
 
 //change client id to your project client_id
-const client_id = '************* REPLACE WITH THE CLIENT_ID YOU GET FROM THE GOOGLE DEVELOPERS CONSOLE *******88';
+const client_id = '681986069624-fr92kk620o53i6ujah8pmr00q3e8reaj.apps.googleusercontent.com';
 const GOOGLE_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&access_type=offline&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth2callback`;
 
 function GLoginBtn(props) {
 
   const handleGLogin = () => {
-    
-    
+
+
     if (props.additionalScopes && Array.isArray(props.additionalScopes)) {
       SCOPES.push(...props.additionalScopes);
-    } else if(props.additionalScopes && typeof props.additionalScopes === "string"){
+    } else if (props.additionalScopes && typeof props.additionalScopes === "string") {
       SCOPES.push(props.additionalScopes);
     }
 
