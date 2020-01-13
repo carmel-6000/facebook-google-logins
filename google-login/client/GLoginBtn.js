@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const SCOPES = [
   'openid',
@@ -61,4 +62,16 @@ function GLoginBtn(props) {
   )
 
 }
+
+GLoginBtn.propTypes = {
+  mt_bool: PropTypes.bool,
+  role: PropTypes.string,
+  redirectUrl: PropTypes.string.isRequired,
+  failureUrl: PropTypes.string.isRequired,
+  additionalScopes: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string)
+  ])
+};
+
 export default GLoginBtn;
