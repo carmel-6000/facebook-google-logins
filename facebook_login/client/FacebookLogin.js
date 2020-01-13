@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import FacebookLoginR from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login';
 import GenericTools from '../../../../tools/GenericTools'; //change the location
+import Auth from '../../../../auth/Auth';
+import propTypes from 'prop-types';
 
-function FacebookLogin(props) {
+
+function LoginWithFacebook(props) {
 
     const responseFacebook = async (res) => {
         //res - response from facebook's api
@@ -16,14 +19,15 @@ function FacebookLogin(props) {
         })
 
         if (!err) {
-            GenericTools.safe_redirect("/");
+            props.cb && props.cb();
+            GenericTools.safe_redirect(props.redirectUrl || "/");
         } else {
             console.log(err);
         }
     }
 
     return (<div>
-        <FacebookLoginR
+        <FacebookLogin
             appId={props.appId} //type your app id
             fields="name,email,picture"
             callback={responseFacebook}
@@ -35,5 +39,11 @@ function FacebookLogin(props) {
 
     </div >);
 }
+LoginWithFacebook.propTypes = {
+    appId : propTypes.string,
+    redirectUrl : propTypes.string,
+    cb : propTypes.func
+}
 
-export default FacebookLogin;
+export default LoginWithFacebook;
+
