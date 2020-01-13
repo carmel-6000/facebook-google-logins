@@ -1,0 +1,36 @@
+
+..............................................................................................
+
+Login with Facebook:
+
+Follow the next steps:
+
+1) Go to the site facebook for developers -  https://developers.facebook.com/
+
+2) sign up for the site.
+
+3) In the site you have an option to create an app that will allow you to access facebook's api.
+   It's important to say that it doesn't really create an app but it gives you data which
+   you can use in your app to get access to facebook's api.
+   choose a name to your app, after that choose the platform and preform all the required steps.
+
+4) after you create an app and get the appId Go to terminal and do:
+        npm install react-facebook-login
+
+5) Go to your code and do:
+        import FacebookLogin from 'react-facebook-login';
+             FacebookLogin is a component of a Facebook login button which gets :
+                app Id - your app id;
+
+                autoLoad - bollean of Doing auto load
+
+                fields	- "name,email,picture" (always) - The fileds you get from 
+                           facebook's api.
+
+                callback - gets function that gets the response from google Api.
+                           you can do whatever you want with this information.
+
+                and many more options. you can read about them on this site :
+                https://www.npmjs.com/package/react-facebook-login  At the end of the page.
+                
+.............................................................................................
