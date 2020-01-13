@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import FacebookLogin from 'react-facebook-login';
-import GenericTools from '../../tools/GenericTools'; //change the location
+import FacebookLoginR from 'react-facebook-login';
+import GenericTools from '../../../../tools/GenericTools'; //change the location
 
-function GenericFacebook(props) {
+function FacebookLogin(props) {
 
     const responseFacebook = async (res) => {
         //res - response from facebook's api
@@ -17,23 +17,23 @@ function GenericFacebook(props) {
 
         if (!err) {
             GenericTools.safe_redirect("/");
-        } else{
+        } else {
             console.log(err);
         }
     }
 
     return (<div>
-        <FacebookLogin
-            appId = "" //type your app id
-            fields = "name,email,picture"
-            callback = {responseFacebook}
-            autoLoad = {false}
-            onFailure = {res => console.log(res)}
-            reAuthenticate = {true}
-            disableMobileRedirect = {true}
+        <FacebookLoginR
+            appId={props.appId} //type your app id
+            fields="name,email,picture"
+            callback={responseFacebook}
+            autoLoad={false}
+            onFailure={res => console.log(res)}
+            reAuthenticate={true}
+            disableMobileRedirect={true}
         />
 
     </div >);
 }
 
-export default GenericFacebook;
+export default FacebookLogin;
