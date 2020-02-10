@@ -41,5 +41,6 @@ CustomUser.json
     add an Authorized JavaScript origin: http://localhost:3000 (only for development
     add an Authorized redirect URI: http://localhost:8080/oauth2callback (only for development)
 
-click on the download sign and replace the content of the file config/client_secret.json with the content of the file you downloaded
+click on the download sign and save the file inside the directory server/config 
+make sure the file's name is "client_secret.json"
 go to client/GLoginBtn.js and change the value of client_id variable to the value of the client_id specified in the fileclient_secret.json
