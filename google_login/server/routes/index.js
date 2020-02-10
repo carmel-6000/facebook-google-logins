@@ -145,14 +145,17 @@ module.exports = app => {
                 res.cookie('kloo', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
                 res.cookie('klk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
                 res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-
+                res.cookie('lang', userInfo.locale, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
                 res.redirect(redirectUrl)
+
+
             });
 
         } catch (err) {
             logGoogle("err in google callback route", err);
             res.redirect(failureUrl);
         }
+
 
     });
 
