@@ -7,10 +7,9 @@ module.exports = app => {
 
         try {
             const userData = req.body.data;
-            console.log(userData.userID);
-            console.log(userData.accessToken);
+
             let url = `https://graph.facebook.com/${userData.userID}?fields=id,name,email,picture&access_token=${userData.accessToken}`;
-            console.log("url is", url);
+
             https.get(url,
                 (resp) => {
                     let data = '';
@@ -30,7 +29,7 @@ module.exports = app => {
                     // The whole response has been received. 
                     resp.on('end', async () => {
                         try {
-                            console.log(data);
+
                             const realData = JSON.parse(data);                  
                             if(realData.error){
                                 console.log("error by url");
@@ -62,7 +61,6 @@ module.exports = app => {
                                     console.log("err in fb:", err)
                                     return next({});
                                 }
-                                console.log("Success creating access_token for facebook login:", at, "\n");
                                 res.cookie('access_token', at.id, { signed: true, maxAge: 1000 * 60 * 60 * 5 });
                                 res.cookie('kl', at.__data.kl, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
                                 res.cookie('klo', at.__data.klo, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
