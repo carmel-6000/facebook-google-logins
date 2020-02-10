@@ -3,7 +3,7 @@ import FacebookLogin from 'react-facebook-login';
 import GenericTools from '../../../tools/GenericTools'; //change the location
 import Auth from '../../../auth/Auth';
 import propTypes from 'prop-types';
-
+import './FacebookLogin.scss';
 
 function LoginWithFacebook(props) {
 
@@ -17,7 +17,7 @@ function LoginWithFacebook(props) {
                 'Content-Type': 'application/json',
             }
         })
-
+        console.log(res);
         if (!err) {
             props.cb && props.cb();
             GenericTools.safe_redirect(props.redirectUrl || "/");
@@ -35,6 +35,9 @@ function LoginWithFacebook(props) {
             onFailure={res => console.log(res)}
             reAuthenticate={true}
             disableMobileRedirect={true}
+            textButton = {"חשבון פייסבוק"}
+            cssClass="my-facebook-button"
+            icon = "fa-facebook"
         />
 
     </div >);
