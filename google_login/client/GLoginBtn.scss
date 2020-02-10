@@ -1,0 +1,25 @@
+.loginBtn--google{
+    text-align: center;
+    font-family: Helvetica,sans-serif;
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: calc(.27548vw + 12.71074px);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color .3s,border-color .3s;
+    background-color: #F33E37;
+    border: calc(.06887vw + .67769px) solid #F33E37;
+    padding: calc(.34435vw + 13.38843px) calc(.34435vw + 18.38843px);
+    width: 100%;
+    border-radius: 2.5%;
+    outline: none;
+    font-size: 1.3rem;
+    margin: auto;
+    .fa-google{
+       padding-left: 1.5%;
+       font-size: 24px;
+    }
+}
