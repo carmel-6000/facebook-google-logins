@@ -78,6 +78,7 @@ module.exports = app => {
 
         const state = JSON.parse(req.query.state);
         let failureUrl = state.failUrl ? state.failUrl : "https://www.hilma.tech/";
+        console.log("state failurl", state.failUrl)
 
         try {
 
@@ -100,7 +101,7 @@ module.exports = app => {
                 res.redirect(failureUrl);//todo
             }
 
-            let redirectUrl = state.url ? state.url : "https://www.hilma.tech/";
+            let redirectUrl = state.loc ? state.loc : "https://www.hilma.tech/";
 
             // todo- check if there is another identifing data
             // maybe- change sub to loginId
@@ -147,7 +148,7 @@ module.exports = app => {
                 res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
 
                 res.redirect(redirectUrl)
-            });
+            }, null , [], 1209600);
 
         } catch (err) {
             logGoogle("err in google callback route", err);
