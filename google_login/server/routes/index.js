@@ -78,13 +78,10 @@ module.exports = app => {
 
         const state = JSON.parse(req.query.state);
         let failureUrl = state.failUrl ? state.failUrl : "https://www.hilma.tech/";
-        console.log("state failurl", state.failUrl)
 
         try {
 
 
-
-            console.log("state", req.query.state)
 
             if (state.role == GOOGLE_ROLES.ADMIN || state.rolo == GOOGLE_ROLES.SUPERADMIN) {
                 logGoogle('YOU CANT HAVE THESE ROLES FOR GOOLE. Aborting login');
@@ -93,7 +90,6 @@ module.exports = app => {
             const redirectedUrl = req.protocol + '://' + req.get('host') + req.originalUrl
             let [userInfo, tokens] = await fetchUserInfo(redirectedUrl, client);
 
-            console.log("USER INFO", userInfo)
 
 
             if (!userInfo) {
