@@ -1,94 +1,102 @@
 'use strict';
+require('dotenv').config();
 const logUser = require('debug')('model:user');
 const randomstring = require("randomstring");
 const https = require('https');
+
+
+const secret = require("../config/secret.json");
+
+const APP_ID = secret.app_id;
+const APP_SECRET = secret.app_secret;
+
+
+function urlFetch(url) {
+    return new Promise((resolve, reject) => {
+        let data = "";
+        https.get(url, res => {
+            res.on("data", chunk => {
+                data += chunk;
+            });
+
+            res.on("end", () => {
+                resolve(data);
+            });
+
+            res.on("error", (err) => {
+                reject(err);
+            })
+        }).on("error", err => {
+            reject(err);
+        })
+    });
+}
+console.log(process.env.DOMAIN)
+
 module.exports = app => {
-    app.post('/fbcallback', async (req, res, next) => {
-
+    app.get('/fbcallback', async (req, res) => {
         try {
-            const userData = req.body.data;
 
-            let url = `https://graph.facebook.com/${userData.userID}?fields=id,name,email,picture&access_token=${userData.accessToken}`;
+            const state = JSON.parse(req.query.state);
+            if (req.query.error) {
+                return res.redirect(state.failUrl);
+            }
+            if (!state.failUrl) state.failUrl = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "http://hilma.tech";
+            if (!state.successUrl) state.successUrl = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "https://www.hilma.tech";
+            const urlForAt = `https://graph.facebook.com/v6.0/oauth/access_token?client_id=${APP_ID}&redirect_uri=${process.env.REACT_APP_SERVER_DOMAIN}/fbcallback/&client_secret=${APP_SECRET}&code=${req.query.code}`;
 
-            https.get(url,
-                (resp) => {
-                    let data = '';
+            const dataWithAt = await urlFetch(urlForAt);
 
-                    // A chunk of data has been recieved.
-                    resp.on('data', (chunk) => {
-                        try {
-                            data += chunk;
-                        }
-                        catch (err) {
-                            console.log("catching err:\n", err, "\n");
-                            return next({});
-                        }
+            const { access_token } = JSON.parse(dataWithAt);
 
-                    });
+            const urlForUserData = `https://graph.facebook.com/me?fields=email,picture,name&access_token=${access_token}`;
 
-                    // The whole response has been received. 
-                    resp.on('end', async () => {
-                        try {
+            const userData = await urlFetch(urlForUserData);
 
-                            const realData = JSON.parse(data);                  
-                            if(realData.error){
-                                console.log("error by url");
-                                return next({});
-                            }
-                            var userRoleId;
-                            let userRole = await app.models.Role.findOne({ where: { name: "SIMPLEUSER" } });
-                            //Searching SIMPLEUSER id in the database 
-                            if (userRole) {
-                                userRoleId = userRole.id;
-                            } else {
-                                return next({});
-                            }
-                            let user = await app.models.CustomUser.findOne({ where: { email: realData.email } });
-                            if (user && (!realData.email || !realData.name )) {
-                                //a case of a user spoofing.
-                                console.log("HACK ATTEMP in facebook login");
-                                return next({});
-                            }
-                            let userInfoForDb = { // The information I save in the database
-                                email: realData.email,
-                                realm: realData.name,
-                                username: realData.email,
-                                loginId: realData.id
-                            };
-                            console.log(userInfoForDb);
-                            app.models.CustomUser.registerOrLoginByUniqueField('loginId', userInfoForDb, userRoleId, (err, at) => {
-                                //here- save the profile picture.
-                                if (err) {
-                                    console.log("err in fb:", err)
-                                    return next({});
-                                }
-                                res.cookie('access_token', at.id, { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                                res.cookie('kl', at.__data.kl, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
-                                res.cookie('klo', at.__data.klo, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
-                                res.cookie('kloo', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                                res.cookie('klk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                                res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                                res.send({ "success": true })
-                            }, null , [], 1209600);
-                        }
-                        catch (err) {
-                            console.log("catching err:\n", err, "\n");
-                            return next({});
-                        }
+            const realData = JSON.parse(userData);
 
-                    });
+            var userRoleId;
+            let userRole = await app.models.Role.findOne({ where: { name: "SIMPLEUSER" } });
+            //Searching SIMPLEUSER id in the database 
+            if (userRole) {
+                userRoleId = userRole.id;
+            } else {
+                return res.redirect(state.failUrl);
+            }
 
 
-                })
-                .on("error", (err) => {
-                    console.log("catching err:\n", err, "\n");
-                    return next({})
-                })
+            let user = await app.models.CustomUser.findOne({ where: { email: realData.email } });
+            if (user && (!realData.email || !realData.name)) {
+                //a case of a user spoofing.
+                console.log("HACK ATTEMP in facebook login");
+                return res.redirect(state.failUrl);
+            }
+            let userInfoForDb = { // The information I save in the database
+                email: realData.email,
+                realm: realData.name,
+                username: realData.email,
+                loginId: realData.id
+            };
+            app.models.CustomUser.registerOrLoginByUniqueField('loginId', userInfoForDb, userRoleId, (err, at) => {
+                //here- save the profile picture.
+                if (err) {
+                    console.log("err in fb:", err)
+                    return res.redirect(state.failUrl);
+                }
+                res.cookie('access_token', at.id, { signed: true, maxAge: 1000 * 60 * 60 * 5 });
+                res.cookie('kl', at.__data.kl, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
+                res.cookie('klo', at.__data.klo, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
+                res.cookie('kloo', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
+                res.cookie('klk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
+                res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
 
+                res.redirect(state.successUrl);
+
+            }, null, [], 1209600);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
-            return next({});
+            return res.redirect(state.failUrl);
         }
     });
 }
