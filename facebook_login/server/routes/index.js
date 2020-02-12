@@ -96,7 +96,13 @@ module.exports = app => {
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
-            return res.redirect(state.failUrl);
+            try {
+                const state = JSON.parse(req.query.state);
+                return res.redirect(state.failUrl);
+
+            } catch (err) {
+                return res.redirect(process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "https://www.hilma.tech")
+            }
         }
     });
 }
