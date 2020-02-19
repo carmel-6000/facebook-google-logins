@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGoogle } from './faGoogle';
 import './GLoginBtn.scss';
 const SCOPES = [
   'openid',
@@ -58,7 +59,7 @@ function GLoginBtn(props) {
   // use loginBtn class to add style to button 
   return (
     <button className="loginBtn loginBtn--google" onClick={handleGLogin}>
-      <i className = "fa fa-google" />
+      <FontAwesomeIcon icon={faGoogle} />
       חשבון גוגל
     </button>
   )
