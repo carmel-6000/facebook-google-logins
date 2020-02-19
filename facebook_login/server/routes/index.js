@@ -62,7 +62,7 @@ module.exports = app => {
             } else {
                 return res.redirect(state.failUrl);
             }
-
+            
 
             let user = await app.models.CustomUser.findOne({ where: { email: realData.email } });
             if (user && (!realData.email || !realData.name)) {
