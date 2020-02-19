@@ -26,6 +26,7 @@ function LoginWithFacebook(props) {
             reAuthenticate={true}
             callback={e => console.log(e)}
             // disableMobileRedirect={true}
+            isMobile={true}
             redirectUri={process.env.REACT_APP_SERVER_DOMAIN + "/fbcallback/"}
             textButton={"חשבון פייסבוק"}
             cssClass="my-facebook-button"
