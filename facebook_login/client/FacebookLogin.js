@@ -19,11 +19,12 @@ function LoginWithFacebook(props) {
 
     return (<div>
         <FacebookLogin
-            appId={props.appId} //type your app id
+            appId={props.appId}
             fields="name,email,picture"
             autoLoad={false}
             onFailure={res => console.log(res)}
             reAuthenticate={true}
+            callback={e => console.log(e)}
             // disableMobileRedirect={true}
             redirectUri={process.env.REACT_APP_SERVER_DOMAIN + "/fbcallback/"}
             textButton={"חשבון פייסבוק"}
