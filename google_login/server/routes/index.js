@@ -61,8 +61,8 @@ module.exports = app => {
     // using unique feild sub - The unique ID of the user's Google Account
     app.get('/oauth2callback', async (req, res) => { //michael work here
 
-        console.log("res query", req.query.scope)
 
+        
 
         if (!req.query.code) {
             logGoogle(errors.NO_CODE);

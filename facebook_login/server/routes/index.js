@@ -31,7 +31,6 @@ function urlFetch(url) {
         })
     });
 }
-console.log(process.env.DOMAIN)
 
 module.exports = app => {
     app.get('/fbcallback', async (req, res) => {
