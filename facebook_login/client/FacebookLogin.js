@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import FacebookLogin from 'react-facebook-login';
-import GenericTools from '../../../tools/GenericTools'; //change the location
-import Auth from '../../../auth/Auth';
 import propTypes from 'prop-types';
 import './FacebookLogin.scss';
 
