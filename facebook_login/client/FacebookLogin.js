@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import './FacebookLogin.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
