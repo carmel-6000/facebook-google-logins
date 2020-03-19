@@ -62,12 +62,12 @@ module.exports = app => {
             } else {
                 return res.redirect(state.failUrl);
             }
-            
+
 
             let user = await app.models.CustomUser.findOne({ where: { email: realData.email } });
             if (user && (!realData.email || !realData.name)) {
                 //a case of a user spoofing.
-                console.log("HACK ATTEMP in facebook login");
+                console.log("HACK ATTEMP in facebook login", realData);
                 return res.redirect(state.failUrl);
             }
             let userInfoForDb = { // The information I save in the database
