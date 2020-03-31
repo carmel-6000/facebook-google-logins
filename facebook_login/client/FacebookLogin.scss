@@ -16,7 +16,7 @@
     // width: 100%;
     border-radius: 3px !important;
     outline: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin: auto;
     // .fa-facebook {
     //     font-size: 24px;
@@ -24,23 +24,39 @@
     // }
     display: flex;
     justify-content: space-between;
-    width: 20vw;
+    width: fit-content;
     padding: 0;
+    min-width: 25vw;
     height: 7vh;
     line-height: 7vh;
     div {
         width: 100%;
+        text-transform: lowercase;
+        font-family: Ariel;
+        font-weight: 100;
+        width: fit-content;
+        padding: 0 1vw;
+        margin: auto;
     }
     &:hover {
         transform: scale(1.1);
-        transition: 0.25s linear;
+        transition: 0.125s linear;
+    }
+    &.hebrew-btn {
+        //direction etc
+    }
+    &.english-btn {
+        flex-direction: row-reverse;
+        .fb-icon {
+            border-radius: 3px 0 0 3px;
+        }
     }
 }
 .fb-icon {
     background: white;
     width: 7vh;
     height: 7vh;
-    padding-top: 2vh;
+    padding-top: 1.5vh;
     padding-left: 3vh;
     border-radius: 0 3px 3px 0;
 }

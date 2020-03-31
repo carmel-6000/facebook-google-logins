@@ -59,11 +59,13 @@ function GLoginBtn(props) {
 
   // use loginBtn class to add style to button 
   return (
-    <button className="loginBtn loginBtn--google" onClick={handleGLogin}>
+    <button className={`loginBtn loginBtn--google ${props.t('textAlign') == "right" ? "hebrew-btn" : "english-btn"}`} onClick={handleGLogin}>
       {/* <FontAwesomeIcon icon={faGoogle} /> */}
       <img src={gIcon} className="g-icon"/>
       <div>
-      חשבון גוגל</div>
+      {props.t('google_login')}
+      {/* חשבון גוגל */}
+      </div>
     </button>
   )
 

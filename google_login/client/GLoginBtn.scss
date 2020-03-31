@@ -25,6 +25,15 @@
 
     &:hover {
         transform: scale(1.1);
-        transition: 0.25s linear;
+        transition: 0.125s linear;
+    }
+    &.hebrew-btn {
+        //direction etc
+    }
+    &.english-btn {
+        flex-direction: row-reverse;
+        .g-icon {
+            border-radius: 3px 0 0 3px;
+        }
     }
 }

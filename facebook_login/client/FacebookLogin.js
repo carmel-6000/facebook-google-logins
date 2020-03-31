@@ -21,12 +21,15 @@ function LoginWithFacebook(props) {
     }
 
     return (
-        <button className="my-facebook-button" onClick={handleClick}>
+        <button className={`my-facebook-button ${props.t('textAlign') == "right" ? "hebrew-btn" : "english-btn"}`} onClick={handleClick}>
             {/* <FontAwesomeIcon icon={faFacebook}></FontAwesomeIcon> */}
             <img src={fbIcon} className="fb-icon"/>
-            <div>{
-                props.buttonText || "חשבון פייסבוק"
-            }</div>    
+            <div>
+                {
+                // props.buttonText || "חשבון פייסבוק"
+            }
+            {props.t('fb_login')}
+            </div>    
             </button>
     );
 }
