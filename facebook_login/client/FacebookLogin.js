@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import './FacebookLogin.scss';
+import fbIcon from './../../../../icons/f.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebook } from './faFacebook' //we saved the icon instead of installing another font-awesome package.
 function LoginWithFacebook(props) {
@@ -21,10 +22,11 @@ function LoginWithFacebook(props) {
 
     return (
         <button className="my-facebook-button" onClick={handleClick}>
-            <FontAwesomeIcon icon={faFacebook}></FontAwesomeIcon>
-            {
+            {/* <FontAwesomeIcon icon={faFacebook}></FontAwesomeIcon> */}
+            <img src={fbIcon} className="fb-icon"/>
+            <div>{
                 props.buttonText || "חשבון פייסבוק"
-            }        
+            }</div>    
             </button>
     );
 }

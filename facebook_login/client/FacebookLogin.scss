@@ -1,27 +1,46 @@
-.my-facebook-button{
+.my-facebook-button {
     text-align: center;
-    font-family: Helvetica,sans-serif;
+    font-family: Helvetica, sans-serif;
     font-weight: 700;
     -webkit-font-smoothing: antialiased;
     color: #fff;
     cursor: pointer;
-    display: inline-block;
-    font-size: calc(.27548vw + 12.71074px);
+    // display: inline-block;
+    font-size: calc(0.27548vw + 12.71074px);
     text-decoration: none;
     text-transform: uppercase;
-    transition: background-color .3s,border-color .3s;
+    transition: background-color 0.3s, border-color 0.3s;
     background-color: #005389;
-    border: calc(.06887vw + .67769px) solid #005389;
-    padding: calc(.34435vw + 13.38843px) calc(.34435vw + 18.38843px);
-    width: 100%;
-    border-radius: 2.5%;
+    border:none;
+    // padding: calc(0.34435vw + 13.38843px) calc(0.34435vw + 18.38843px);
+    // width: 100%;
+    border-radius: 3px;
     outline: none;
     font-size: 1.3rem;
     margin: auto;
-    .fa-facebook{
-       font-size: 24px;
-       padding-left: 1.5%;
+    // .fa-facebook {
+    //     font-size: 24px;
+    //     padding-left: 1.5%;
+    // }
+    display: flex;
+    justify-content: space-between;
+    width: 40vw;
+    padding: 0;
+    height: 8vh;
+    line-height: 8vh;
+    div {
+        width: 100%;
     }
-    
+    &:hover {
+        transform: scale(1.1);
+        transition: 0.25s linear;
+    }
 }
-
+.fb-icon {
+    background: white;
+    width: 8vh;
+    height: 8vh;
+    padding-top: 2vh;
+    padding-left: 2vh;
+    border-radius: 0 3px 3px 0;
+}

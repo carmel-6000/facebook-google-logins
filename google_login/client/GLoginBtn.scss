@@ -1,25 +1,30 @@
-.loginBtn--google{
+.loginBtn--google {
     text-align: center;
-    font-family: Helvetica,sans-serif;
+    font-family: Helvetica, sans-serif;
     font-weight: 700;
     -webkit-font-smoothing: antialiased;
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    font-size: calc(.27548vw + 12.71074px);
+    font-size: calc(0.27548vw + 12.71074px);
     text-decoration: none;
     text-transform: uppercase;
-    transition: background-color .3s,border-color .3s;
-    background-color: #F33E37;
-    border: calc(.06887vw + .67769px) solid #F33E37;
-    padding: calc(.34435vw + 13.38843px) calc(.34435vw + 18.38843px);
+    transition: background-color 0.3s, border-color 0.3s;
+    background-color: #f33e37;
+    border: none;
+    // padding: calc(.34435vw + 13.38843px) calc(.34435vw + 18.38843px);
     width: 100%;
-    border-radius: 2.5%;
+    border-radius: 3px;
     outline: none;
     font-size: 1.3rem;
     margin: auto;
-    .fa-google{
-       padding-left: 1.5%;
-       font-size: 24px;
+    // .fa-google{
+    //    padding-left: 1.5%;
+    //    font-size: 24px;
+    // }
+
+    &:hover {
+        transform: scale(1.1);
+        transition: 0.25s linear;
     }
 }

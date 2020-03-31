@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import gIcon from './../../../../icons/gicon.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from './faGoogle';
 import './GLoginBtn.scss';
@@ -59,8 +60,10 @@ function GLoginBtn(props) {
   // use loginBtn class to add style to button 
   return (
     <button className="loginBtn loginBtn--google" onClick={handleGLogin}>
-      <FontAwesomeIcon icon={faGoogle} />
-      חשבון גוגל
+      {/* <FontAwesomeIcon icon={faGoogle} /> */}
+      <img src={gIcon} className="g-icon"/>
+      <div>
+      חשבון גוגל</div>
     </button>
   )
 
