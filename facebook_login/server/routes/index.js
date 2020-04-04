@@ -74,9 +74,9 @@ module.exports = app => {
                 email: realData.email,
                 realm: realData.name,
                 username: realData.email,
-                loginId: realData.id
+                floginId: realData.id
             };
-            app.models.CustomUser.registerOrLoginByUniqueField('loginId', userInfoForDb, userRoleId, (err, at) => {
+            app.models.CustomUser.registerOrLoginByUniqueField('floginId', userInfoForDb, userRoleId, (err, at) => {
                 //here- save the profile picture.
                 if (err) {
                     console.log("err in fb:", err)
@@ -91,7 +91,7 @@ module.exports = app => {
 
                 res.redirect(state.successUrl);
 
-            }, null, [], 1209600);
+            }, null, ['floginId'], 1209600);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");

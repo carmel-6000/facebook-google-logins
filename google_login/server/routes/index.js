@@ -144,7 +144,7 @@ module.exports = app => {
                 res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
                 res.cookie('lang', userInfo.locale, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
                 res.redirect(redirectUrl)
-            }, null, [], 1209600);
+            }, null, ['loginId'], 1209600);
 
         } catch (err) {
             logGoogle("err in google callback route", err);
