@@ -10,7 +10,7 @@ const SCOPES = [
 ];//TODO- get more scopes in props?
 
 //change client id to your project client_id
-const client_id = '681986069624-fr92kk620o53i6ujah8pmr00q3e8reaj.apps.googleusercontent.com';
+const client_id = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const GOOGLE_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&access_type=offline&response_type=code&redirect_uri=${process.env.REACT_APP_SERVER_DOMAIN}%2Foauth2callback`;//http%3A%2F%2Flocalhost%3A8080
 
 function GLoginBtn(props) {
