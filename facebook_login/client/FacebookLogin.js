@@ -1,31 +1,56 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import propTypes from 'prop-types';
 import './FacebookLogin.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebook } from './faFacebook' //we saved the icon instead of installing another font-awesome package.
+import Auth from '../../../auth/Auth';
+
 function LoginWithFacebook(props) {
 
-    const handleClick = e => {
-        sessionStorage.setItem("login", "facebook");
 
-        const state = JSON.stringify({
-            successUrl: encodeURIComponent(window.location.origin + (window.location.hash[0] === "#" ? `/#${props.successUrl || '/samples'}` : `${props.successUrl || '/samples'}`)),
-            failUrl: encodeURIComponent(window.location.origin + (window.location.hash[0] === "#" ? `/#${props.failureUrl || '/'}` : `${props.failureUrl || '/'}`))
-        });
+    const connectToServer = async (response) => {
+        try {
+            if (response && response.authResponse && response.authResponse && response.authResponse.accessToken) {
+                const [res, err] = await Auth.superAuthFetch(`/fbcallback?access_token=${response.authResponse.accessToken}`);
+                if(res && res.success){
+                    props.afterLogin();
+                }
 
-        const url = `https://www.facebook.com/v6.0/dialog/oauth?client_id=${props.appId}&redirect_uri=${process.env.REACT_APP_SERVER_DOMAIN}/fbcallback/&state=${state}`;
-        window.location.href = url;
-
-
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 
+    const login = () => {
+        window.FB.login(function (response) {
+            // handle the response 
+            console.log("respone!", response);
+            connectToServer(response);
+
+        });
+    }
+
+    window.fbAsyncInit = function () {
+        window.FB.init({
+            appId: props.appId,
+            cookie: true,                     // Enable cookies to allow the server to access the session.
+            xfbml: true,                     // Parse social plugins on this webpage.
+            version: 'v7.0'           // Use this Graph API version for this call.
+        });
+    };
+
+
+
+
     return (
-        <button className="my-facebook-button" onClick={handleClick}>
+        <button className="my-facebook-button" onClick={login}>
             <FontAwesomeIcon icon={faFacebook}></FontAwesomeIcon>
             {
                 props.buttonText || "חשבון פייסבוק"
-            }        
-            </button>
+            }
+        </button>
     );
 }
 

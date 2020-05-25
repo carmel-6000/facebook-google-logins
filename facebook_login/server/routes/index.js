@@ -36,39 +36,42 @@ module.exports = app => {
     app.get('/fbcallback', async (req, res) => {
         try {
 
-            const state = JSON.parse(req.query.state);
-            if (req.query.error) {
-                return res.redirect(state.failUrl);
+            // const state = JSON.parse(req.query.state);
+            // if (req.query.error) {
+            //     return res.redirect(state.failUrl);
+            // }
+            // if (!state.failUrl) state.failUrl = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "http://hilma.tech";
+            // if (!state.successUrl) state.successUrl = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "https://www.hilma.tech";
+            // const urlForAt = `https://graph.facebook.com/v6.0/oauth/access_token?client_id=${APP_ID}&redirect_uri=${process.env.REACT_APP_SERVER_DOMAIN}/fbcallback/&client_secret=${APP_SECRET}&code=${req.query.code}`;
+
+            // const dataWithAt = await urlFetch(urlForAt);
+
+            // const { access_token } = JSON.parse(dataWithAt);
+            let { access_token } = req.query;
+            if (!access_token) {
+                res.send({ success: false });
             }
-            if (!state.failUrl) state.failUrl = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "http://hilma.tech";
-            if (!state.successUrl) state.successUrl = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "https://www.hilma.tech";
-            const urlForAt = `https://graph.facebook.com/v6.0/oauth/access_token?client_id=${APP_ID}&redirect_uri=${process.env.REACT_APP_SERVER_DOMAIN}/fbcallback/&client_secret=${APP_SECRET}&code=${req.query.code}`;
-
-            const dataWithAt = await urlFetch(urlForAt);
-
-            const { access_token } = JSON.parse(dataWithAt);
 
             const urlForUserData = `https://graph.facebook.com/me?fields=email,picture,name&access_token=${access_token}`;
 
             const userData = await urlFetch(urlForUserData);
 
             const realData = JSON.parse(userData);
-
             var userRoleId;
             let userRole = await app.models.Role.findOne({ where: { name: "SIMPLEUSER" } });
             //Searching SIMPLEUSER id in the database 
             if (userRole) {
                 userRoleId = userRole.id;
             } else {
-                return res.redirect(state.failUrl);
+                res.send({success: false});
             }
-            
+
 
             let user = await app.models.CustomUser.findOne({ where: { email: realData.email } });
             if (user && (!realData.email || !realData.name)) {
                 //a case of a user spoofing.
                 console.log("HACK ATTEMP in facebook login");
-                return res.redirect(state.failUrl);
+                res.send({success: false});
             }
             let userInfoForDb = { // The information I save in the database
                 email: realData.email,
@@ -80,7 +83,7 @@ module.exports = app => {
                 //here- save the profile picture.
                 if (err) {
                     console.log("err in fb:", err)
-                    return res.redirect(state.failUrl);
+                    res.send({success: false});
                 }
                 res.cookie('access_token', at.id, { signed: true, maxAge: 1000 * 60 * 60 * 5 });
                 res.cookie('kl', at.__data.kl, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
@@ -89,18 +92,17 @@ module.exports = app => {
                 res.cookie('klk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
                 res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
 
-                res.redirect(state.successUrl);
+                res.send({success: true});
 
             }, null, [], 1209600);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
             try {
-                const state = JSON.parse(req.query.state);
-                return res.redirect(state.failUrl);
+                res.send({success: false});
 
             } catch (err) {
-                return res.redirect(process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN + "/" : "https://www.hilma.tech")
+                res.send({success: false});
             }
         }
     });
