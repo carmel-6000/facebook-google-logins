@@ -12,7 +12,7 @@ function LoginWithFacebook(props) {
         try {
             if (response && response.authResponse && response.authResponse && response.authResponse.accessToken) {
                 const [res, err] = await Auth.superAuthFetch(`/fbcallback?access_token=${response.authResponse.accessToken}`);
-                if(res && res.success){
+                if(res && res.success && props.afterLogin){
                     props.afterLogin();
                 }
 
