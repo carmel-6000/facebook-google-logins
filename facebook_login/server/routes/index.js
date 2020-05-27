@@ -9,7 +9,7 @@ const secret = require("../config/secret.json");
 
 const APP_ID = secret.app_id;
 const APP_SECRET = secret.app_secret;
-
+const TWO_WEEKS = 60 * 60 * 24 * 14;
 
 function urlFetch(url) {
     return new Promise((resolve, reject) => {
@@ -63,7 +63,7 @@ module.exports = app => {
             if (userRole) {
                 userRoleId = userRole.id;
             } else {
-                res.send({success: false});
+                res.send({ success: false });
             }
 
 
@@ -71,7 +71,7 @@ module.exports = app => {
             if (user && (!realData.email || !realData.name)) {
                 //a case of a user spoofing.
                 console.log("HACK ATTEMP in facebook login");
-                res.send({success: false});
+                res.send({ success: false });
             }
             let userInfoForDb = { // The information I save in the database
                 email: realData.email,
@@ -83,26 +83,27 @@ module.exports = app => {
                 //here- save the profile picture.
                 if (err) {
                     console.log("err in fb:", err)
-                    res.send({success: false});
+                    res.send({ success: false });
                 }
-                res.cookie('access_token', at.id, { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                res.cookie('kl', at.__data.kl, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
-                res.cookie('klo', at.__data.klo, { signed: false, maxAge: 1000 * 60 * 60 * 5 });
-                res.cookie('kloo', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                res.cookie('klk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
-                res.cookie('olk', randomstring.generate(), { signed: true, maxAge: 1000 * 60 * 60 * 5 });
+                let expires = new Date(Date.now() + (TWO_WEEKS * 1000));
+                res.cookie('access_token', at.id, { signed: true, expires });
+                res.cookie('kl', at.__data.kl, { signed: false, expires });
+                res.cookie('klo', at.__data.klo, { signed: false, expires });
+                res.cookie('kloo', randomstring.generate(), { signed: true, expires });
+                res.cookie('klk', randomstring.generate(), { signed: true, expires });
+                res.cookie('olk', randomstring.generate(), { signed: true, expires });
 
-                res.send({success: true});
+                res.send({ success: true });
 
-            }, null, [], 1209600);
+            }, null, [], TWO_WEEKS);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
             try {
-                res.send({success: false});
+                res.send({ success: false });
 
             } catch (err) {
-                res.send({success: false});
+                res.send({ success: false });
             }
         }
     });
