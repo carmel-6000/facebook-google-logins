@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component} from 'react';
 import propTypes from 'prop-types';
 import './FacebookLogin.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,12 +7,12 @@ import Auth from '../../../auth/Auth';
 
 function LoginWithFacebook(props) {
 
-
     const connectToServer = async (response) => {
         try {
+            props.beforeLogin && props.beforeLogin();
             if (response && response.authResponse && response.authResponse && response.authResponse.accessToken) {
                 const [res, err] = await Auth.superAuthFetch(`/fbcallback?access_token=${response.authResponse.accessToken}`);
-                if(res && res.success && props.afterLogin){
+                if (res && res.success && props.afterLogin) {
                     props.afterLogin();
                 }
 
@@ -24,33 +24,31 @@ function LoginWithFacebook(props) {
     }
 
     const login = () => {
-        window.FB.login(function (response) {
-            // handle the response 
-            console.log("respone!", response);
-            connectToServer(response);
-
-        });
+        window.FB.getLoginStatus(function (resp) {
+            if (resp.status !== 'connected') {
+                window.FB.login(function (response) {
+                    // handle the response 
+                    connectToServer(response);
+                }, { auth_type: 'reauthenticate' });
+            }
+            else{
+                connectToServer(resp);
+            }
+        })
     }
-
-    window.fbAsyncInit = function () {
-        window.FB.init({
-            appId: props.appId,
-            cookie: true,                     // Enable cookies to allow the server to access the session.
-            xfbml: true,                     // Parse social plugins on this webpage.
-            version: 'v7.0'           // Use this Graph API version for this call.
-        });
-    };
 
 
 
 
     return (
-        <button className="my-facebook-button" onClick={login}>
-            <FontAwesomeIcon icon={faFacebook}></FontAwesomeIcon>
-            {
-                props.buttonText || "חשבון פייסבוק"
-            }
-        </button>
+        <div>
+            <button className="my-facebook-button" onClick={login}>
+                <FontAwesomeIcon icon={faFacebook}></FontAwesomeIcon>
+                {
+                    props.buttonText || "חשבון פייסבוק"
+                }
+            </button>
+        </div>
     );
 }
 
