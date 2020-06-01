@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import './FacebookLogin.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,12 +10,9 @@ function LoginWithFacebook(props) {
     const connectToServer = async (response) => {
         try {
             props.beforeLogin && props.beforeLogin();
-            if (response && response.authResponse && response.authResponse && response.authResponse.accessToken) {
-                const [res, err] = await Auth.superAuthFetch(`/fbcallback?access_token=${response.authResponse.accessToken}`);
-                if (res && res.success && props.afterLogin) {
-                    props.afterLogin();
-                }
-
+            const [res, err] = await Auth.superAuthFetch(`/fbcallback?access_token=${response.authResponse.accessToken}`);
+            if (res && res.success && props.afterLogin) {
+                props.afterLogin();
             }
         }
         catch (err) {
@@ -28,11 +25,15 @@ function LoginWithFacebook(props) {
             if (resp.status !== 'connected') {
                 window.FB.login(function (response) {
                     // handle the response 
-                    connectToServer(response);
+                    if (response && response.authResponse && response.authResponse && response.authResponse.accessToken) {
+                        connectToServer(response);
+                    }
                 }, { auth_type: 'reauthenticate' });
             }
-            else{
-                connectToServer(resp);
+            else {
+                if (resp && resp.authResponse && resp.authResponse && resp.authResponse.accessToken) {
+                    connectToServer(resp);
+                }
             }
         })
     }
