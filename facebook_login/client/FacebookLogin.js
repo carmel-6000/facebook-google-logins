@@ -14,9 +14,12 @@ function LoginWithFacebook(props) {
             if (res && res.success && props.afterLogin) {
                 props.afterLogin();
             }
+            else {
+                props.failedToLogin && props.failedToLogin();
+            }
         }
         catch (err) {
-            console.log(err);
+            props.failedToLogin && props.failedToLogin();
         }
     }
 
@@ -28,11 +31,18 @@ function LoginWithFacebook(props) {
                     if (response && response.authResponse && response.authResponse && response.authResponse.accessToken) {
                         connectToServer(response);
                     }
+                    else if (resp && resp.authResponse && resp.authResponse && resp.authResponse.accessToken) {
+                        connectToServer(resp);
+                    }
+
                 }, { auth_type: 'reauthenticate' });
             }
             else {
                 if (resp && resp.authResponse && resp.authResponse && resp.authResponse.accessToken) {
                     connectToServer(resp);
+                }
+                else {
+                    props.failedToLogin && props.failedToLogin();
                 }
             }
         })

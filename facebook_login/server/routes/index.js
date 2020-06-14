@@ -49,7 +49,7 @@ module.exports = app => {
             // const { access_token } = JSON.parse(dataWithAt);
             let { access_token } = req.query;
             if (!access_token) {
-                res.send({ success: false });
+                 return res.send({ success: false });
             }
 
             const urlForUserData = `https://graph.facebook.com/me?fields=email,picture,name&access_token=${access_token}`;
@@ -63,16 +63,9 @@ module.exports = app => {
             if (userRole) {
                 userRoleId = userRole.id;
             } else {
-                res.send({ success: false });
+                 return res.send({ success: false });
             }
 
-
-            let user = await app.models.CustomUser.findOne({ where: { email: realData.email } });
-            if (user && (!realData.email || !realData.name)) {
-                //a case of a user spoofing.
-                console.log("HACK ATTEMP in facebook login");
-                res.send({ success: false });
-            }
             let userInfoForDb = { // The information I save in the database
                 email: realData.email,
                 realm: realData.name,
@@ -83,7 +76,7 @@ module.exports = app => {
                 //here- save the profile picture.
                 if (err) {
                     console.log("err in fb:", err)
-                    res.send({ success: false });
+                     return res.send({ success: false });
                 }
                 let expires = new Date(Date.now() + (TWO_WEEKS * 1000));
                 res.cookie('access_token', at.id, { signed: true, expires });
@@ -93,18 +86,13 @@ module.exports = app => {
                 res.cookie('klk', randomstring.generate(), { signed: true, expires });
                 res.cookie('olk', randomstring.generate(), { signed: true, expires });
 
-                res.send({ success: true });
+                return res.send({ success: true });
 
             }, null, [], TWO_WEEKS);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
-            try {
-                res.send({ success: false });
-
-            } catch (err) {
-                res.send({ success: false });
-            }
+             return res.send({ success: false });
         }
     });
 }
