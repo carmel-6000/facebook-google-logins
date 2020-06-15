@@ -48,6 +48,7 @@ module.exports = app => {
 
             // const { access_token } = JSON.parse(dataWithAt);
             let { access_token } = req.query;
+            console.log(access_token);
             if (!access_token) {
                  return res.send({ success: false, invalidUser: true });
             }
@@ -57,6 +58,7 @@ module.exports = app => {
             const userData = await urlFetch(urlForUserData);
 
             const realData = JSON.parse(userData);
+            console.log("real data ", realData);
             if(!realData){
                 return res.send({success: false, invalidUser: true});
             }
