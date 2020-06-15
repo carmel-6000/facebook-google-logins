@@ -125,7 +125,7 @@ module.exports = app => {
 
                 return res.send({ success: true });
 
-            }, null, ['email'], TWO_WEEKS);
+            }, null, [], TWO_WEEKS);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
