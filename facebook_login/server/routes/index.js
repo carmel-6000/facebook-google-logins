@@ -50,23 +50,45 @@ module.exports = app => {
             let { access_token } = req.query;
             console.log(access_token);
             if (!access_token) {
-                 return res.send({ success: false, invalidUser: true });
+                return res.send({ success: false, invalidUser: true });
             }
 
             const urlForUserData = `https://graph.facebook.com/me?fields=email,picture,name&access_token=${access_token}`;
 
             const userData = await urlFetch(urlForUserData);
 
-            const realData = JSON.parse(userData);
+            let realData = JSON.parse(userData);
             console.log("real data ", realData);
-            if(!realData){
-                return res.send({success: false, invalidUser: true});
+            let uniqueField = "email";
+            if (!realData) {
+                return res.send({ success: false, invalidUser: true });
             }
-            else if(!realData.email){
-                return res.send({success: false, missingEmail: true});
+            else if (!realData.email) {
+                uniqueField = "loginId";
+                const isExist = await app.models.CustomUser.findOne({ where: { loginId: realData.id } });
+                if (!isExist) {
+                    uniqueField = "email";
+                    let maxCount = 100;
+                    let uniqueEmail = false;
+                    let currentTry = 0;
+                    let email = "";
+                    while (maxCount > currentTry && !uniqueEmail) {
+                        email = randomstring.generate() + "@alyn-safecards.com";
+                        let emailUser = await app.models.CustomUser.findOne({ where: { email: email } });
+                        if (!emailUser) {
+                            uniqueEmail = true;
+                        }
+                    }
+                    if (uniqueEmail) {
+                        realData.email = email;
+                    }
+                    else {
+                        return res.send({ success: false, error: true });
+                    }
+                }
             }
-            else if(!realData.name){
-                return res.send({success: false, missingName: true});
+            else if (!realData.name) {
+                return res.send({ success: false, missingName: true });
             }
             var userRoleId;
             let userRole = await app.models.Role.findOne({ where: { name: "SIMPLEUSER" } });
@@ -74,7 +96,7 @@ module.exports = app => {
             if (userRole) {
                 userRoleId = userRole.id;
             } else {
-                 return res.send({ success: false, error: true });
+                return res.send({ success: false, error: true });
             }
 
             let userInfoForDb = { // The information I save in the database
@@ -83,11 +105,11 @@ module.exports = app => {
                 username: realData.email,
                 loginId: realData.id
             };
-            app.models.CustomUser.registerOrLoginByUniqueField('loginId', userInfoForDb, userRoleId, (err, at) => {
+            app.models.CustomUser.registerOrLoginByUniqueField(uniqueField, userInfoForDb, userRoleId, (err, at) => {
                 //here- save the profile picture.
                 if (err) {
                     console.log("err in fb:", err)
-                     return res.send({ success: false, error: true });
+                    return res.send({ success: false, error: true });
                 }
                 let expires = new Date(Date.now() + (TWO_WEEKS * 1000));
                 res.cookie('access_token', at.id, { signed: true, expires });
@@ -103,7 +125,7 @@ module.exports = app => {
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
-             return res.send({ success: false, error: true });
+            return res.send({ success: false, error: true });
         }
     });
 }
