@@ -48,7 +48,7 @@ function LoginWithFacebook(props) {
         })
     }
 
-
+    
     return (
         <div>
             <button className="my-facebook-button" onClick={login}>

@@ -60,12 +60,16 @@ module.exports = app => {
             let realData = JSON.parse(userData);
             console.log("real data ", realData);
             let uniqueField = "email";
+            const isExist = await app.models.CustomUser.findOne({ where: { loginId: realData.id } });
+            if(isExist){
+                uniqueField = "loginId";
+            }
+            
             if (!realData) {
                 return res.send({ success: false, invalidUser: true });
             }
             else if (!realData.email) {
                 uniqueField = "loginId";
-                const isExist = await app.models.CustomUser.findOne({ where: { loginId: realData.id } });
                 if (!isExist) {
                     uniqueField = "email";
                     let maxCount = 100;
