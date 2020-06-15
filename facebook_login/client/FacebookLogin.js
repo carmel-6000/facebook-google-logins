@@ -15,11 +15,11 @@ function LoginWithFacebook(props) {
                 props.afterLogin();
             }
             else {
-                props.failedToLogin && props.failedToLogin();
+                props.failedToLogin && props.failedToLogin(res);
             }
         }
         catch (err) {
-            props.failedToLogin && props.failedToLogin();
+            props.failedToLogin && props.failedToLogin({sucess: false, invalidUser: true});
         }
     }
 
@@ -42,13 +42,11 @@ function LoginWithFacebook(props) {
                     connectToServer(resp);
                 }
                 else {
-                    props.failedToLogin && props.failedToLogin();
+                    props.failedToLogin && props.failedToLogin({sucess: false, error: true});
                 }
             }
         })
     }
-
-
 
 
     return (

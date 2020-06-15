@@ -49,7 +49,7 @@ module.exports = app => {
             // const { access_token } = JSON.parse(dataWithAt);
             let { access_token } = req.query;
             if (!access_token) {
-                 return res.send({ success: false });
+                 return res.send({ success: false, invalidUser: true });
             }
 
             const urlForUserData = `https://graph.facebook.com/me?fields=email,picture,name&access_token=${access_token}`;
@@ -57,13 +57,22 @@ module.exports = app => {
             const userData = await urlFetch(urlForUserData);
 
             const realData = JSON.parse(userData);
+            if(!realData){
+                return res.send({success: false, invalidUser: true});
+            }
+            else if(!realData.email){
+                return res.send({success: false, missingEmail: true});
+            }
+            else if(!realData.name){
+                return res.send({success: false, missingName: true});
+            }
             var userRoleId;
             let userRole = await app.models.Role.findOne({ where: { name: "SIMPLEUSER" } });
             //Searching SIMPLEUSER id in the database 
             if (userRole) {
                 userRoleId = userRole.id;
             } else {
-                 return res.send({ success: false });
+                 return res.send({ success: false, error: true });
             }
 
             let userInfoForDb = { // The information I save in the database
@@ -76,7 +85,7 @@ module.exports = app => {
                 //here- save the profile picture.
                 if (err) {
                     console.log("err in fb:", err)
-                     return res.send({ success: false });
+                     return res.send({ success: false, error: true });
                 }
                 let expires = new Date(Date.now() + (TWO_WEEKS * 1000));
                 res.cookie('access_token', at.id, { signed: true, expires });
@@ -92,7 +101,7 @@ module.exports = app => {
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
-             return res.send({ success: false });
+             return res.send({ success: false, error: true });
         }
     });
 }
