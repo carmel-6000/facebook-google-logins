@@ -59,19 +59,32 @@ module.exports = app => {
 
             let realData = JSON.parse(userData);
             console.log("real data ", realData);
+            let isEmailExist = false;
+            let currentUser = null;
+            if(realData.email){
+                currentUser = await app.models.CustomUser.findOne({ where: { email: realData.email } });
+                if(currentUser){
+                    isEmailExist = true;
+                }
+            }
             let uniqueField = "email";
-            const isExist = await app.models.CustomUser.findOne({ where: { loginId: realData.id } });
-            if(isExist){
+            let updateFields = ['email'];
+            const ExistUser = await app.models.CustomUser.findOne({ where: { loginId: realData.id } });
+            if(ExistUser){
                 uniqueField = "loginId";
+            }
+
+            if(ExistUser && currentUser){
+                if(ExistUser.id !== currentUser.id){
+                    updateFields = [];
+                }
             }
             
             if (!realData) {
                 return res.send({ success: false, invalidUser: true });
             }
             else if (!realData.email) {
-                uniqueField = "loginId";
-                if (!isExist) {
-                    uniqueField = "email";
+                if (!ExistUser) {
                     let maxCount = 100;
                     let uniqueEmail = false;
                     let currentTry = 0;
@@ -125,7 +138,7 @@ module.exports = app => {
 
                 return res.send({ success: true });
 
-            }, null, [], TWO_WEEKS);
+            }, null, updateFields, TWO_WEEKS);
         }
         catch (err) {
             console.log("catching err:\n", err, "\n");
